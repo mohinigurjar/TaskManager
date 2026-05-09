@@ -47,6 +47,11 @@ exports.createUser = async (req, res) => {
 
     } catch (error) {
         console.error("Create User Error:", error);
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message: "Email already exists"
+            });
+        }
 
         return res.status(500).json({
             success: false,
