@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         minlength: 6,
+        select: false
     },
 
     role: {
@@ -31,5 +32,13 @@ const userSchema = new mongoose.Schema({
     }
 },
 {timestamps: true});
+
+//protect password from exposing
+userSchema.set("toJSON", {
+    transform: function (doc, ret) {
+        delete ret.password;
+        return ret;
+    }
+});
 
 exports.User = mongoose.model("User", userSchema);
