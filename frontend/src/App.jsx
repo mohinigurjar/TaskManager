@@ -1,30 +1,71 @@
-import { useState } from 'react'
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 
-import './App.css'
+import LoginPage from "../src/pages/LoginPage";
+import SignupPage from "../src/pages/SignupPage";
+import DashboardPage from "../src/pages/DashboardPage";
+import AdminDashboard from "../src/pages/AdminDashboard";
 
-import { useEffect } from "react";
-import { fetchTasks } from "../src/services/task.services";
-import { adminFetchUsers } from './services/admin.services';
+import "./App.css";
 
 function App() {
 
-  useEffect(() => {
+  const { user, isAdmin, loading } = useAuth();
 
-    const testAPI = async () => {
-      try {
-        const response = await adminFetchUsers();
-        console.log(response.data);
-      } catch (error) {
-        console.log(error.response?.data || error.message);
-      }
-    };
-
-    testAPI();
-
-  }, []);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <h1>Frontend Connected</h1>
+    <Routes>
+
+      {/* LOGIN */}
+      <Route
+        path="/login"
+        element={
+          user
+            ? <Navigate to="/dashboard" replace />
+            : <LoginPage />
+        }
+      />
+
+      {/* SIGNUP */}
+      <Route
+        path="/signup"
+        element={
+          user
+            ? <Navigate to="/dashboard" replace />
+            : <SignupPage />
+        }
+      />
+
+      {/* USER DASHBOARD */}
+      <Route
+        path="/dashboard"
+        element={
+          user
+            ? <DashboardPage />
+            : <Navigate to="/login" replace />
+        }
+      />
+
+      {/* ADMIN DASHBOARD */}
+      <Route
+        path="/admin"
+        element={
+          user && isAdmin
+            ? <AdminDashboard />
+            : <Navigate to="/dashboard" replace />
+        }
+      />
+
+      {/* DEFAULT */}
+      <Route
+        path="*"
+        element={<Navigate to="/login" replace />}
+      />
+
+    </Routes>
   );
 }
 
