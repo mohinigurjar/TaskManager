@@ -4,18 +4,17 @@ import { createUser, getMe, loginUser, logoutUser } from "../services/auth.servi
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+
+    // undefined = loading, null = unauthenticated, object = authenticated
+    const [user, setUser] = useState(undefined);
 
     // check logged-in user on app load
-    const fetchUser = async () => {
+    const fetchUser = async () => {     
         try {
             const res = await getMe(); 
             setUser(res.data.user);
         } catch (err) {
             setUser(null);
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -25,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
     // login
     const login = async (data) => {
-        const res = await loginUser({data});
+        const res = await loginUser(data);
         setUser(res.data.user);
         return res;
     };
@@ -42,22 +41,14 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
-    //test
-    useEffect(() => {
-        console.log("USER STATE: ", user)
-    }, [user])
-
     return (
         <AuthContext.Provider
             value={{
                 user,
                 setUser,
-                loading,
                 login,
                 signup,
                 logout,
-                isAuthenticated: !!user,
-                isAdmin: user?.role === "admin"
             }}
         >
             {children}

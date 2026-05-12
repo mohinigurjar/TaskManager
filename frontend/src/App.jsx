@@ -1,20 +1,18 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 
-import LoginPage from "../src/pages/LoginPage";
-import SignupPage from "../src/pages/SignupPage";
-import DashboardPage from "../src/pages/DashboardPage";
-import AdminDashboard from "../src/pages/AdminDashboard";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import DashboardPage from "./pages/DashboardPage";
+import AdminDashboard from "./pages/AdminDashboard";
+
+import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminRoute from "./routes/AdminRoute";
+import PublicRoute from "./routes/PublicRoute";
 
 import "./App.css";
 
 function App() {
-
-  const { user, isAdmin, loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Routes>
@@ -22,30 +20,22 @@ function App() {
       {/* LOGIN */}
       <Route
         path="/login"
-        element={
-          user
-            ? <Navigate to="/dashboard" replace />
-            : <LoginPage />
-        }
+        element={<PublicRoute page={<LoginPage />} />}
       />
 
       {/* SIGNUP */}
       <Route
         path="/signup"
-        element={
-          user
-            ? <Navigate to="/dashboard" replace />
-            : <SignupPage />
-        }
+        element={<PublicRoute page={<SignupPage />} />}
       />
 
       {/* USER DASHBOARD */}
       <Route
         path="/dashboard"
         element={
-          user
-            ? <DashboardPage />
-            : <Navigate to="/login" replace />
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
         }
       />
 
@@ -53,9 +43,9 @@ function App() {
       <Route
         path="/admin"
         element={
-          user && isAdmin
-            ? <AdminDashboard />
-            : <Navigate to="/dashboard" replace />
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
         }
       />
 

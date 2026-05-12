@@ -146,7 +146,7 @@ exports.getMe = async (req, res) => {
     try {
         const userId = req.user.userId;
 
-        const user = await User.findById(userId).select("-password");
+        const user = await User.findById(userId);
 
         if (!user) {
             return res.status(404).json({
@@ -155,9 +155,13 @@ exports.getMe = async (req, res) => {
             });
         }
 
+        // Remove password from response
+        const userResponse = user.toObject();
+        delete userResponse.password;
+
         return res.status(200).json({
             success: true,
-            data: user
+            user: userResponse
         });
 
     } catch (error) {
