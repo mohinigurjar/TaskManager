@@ -19,11 +19,12 @@ exports.createTask = async (req, res) => {
             task,
             createdBy: userId
         });
+        const populatedTask = await newTask.populate("createdBy", "name email");
 
         return res.status(201).json({
             success: true,
             message: "Task created successfully",
-            data: newTask
+            data: populatedTask
         });
 
     } catch (error) {
@@ -91,13 +92,22 @@ exports.updateTask = async (req, res) => {
             });
         }
 
+        if(existingTask.task.trim() === task.trim()){
+            return res.status(400).json({
+                success: false,
+                message: "Edit task to update"
+            });
+        }
+
         existingTask.task = task;
         await existingTask.save();
+
+        const populatedTask = await existingTask.populate("createdBy", "name email");
 
         return res.status(200).json({
             success: true,
             message: "Task updated successfully",
-            data: existingTask
+            data: populatedTask
         });
 
     } catch (error) {
@@ -141,10 +151,12 @@ exports.updateTaskStatus = async (req, res) => {
         task.status = status;
         await task.save();
 
+        const populatedTask = await task.populate("createdBy", "name email");
+
         return res.status(200).json({
             success: true,
             message: "Task status updated successfully",
-            data: task
+            data: populatedTask
         });
 
     } catch (error) {
