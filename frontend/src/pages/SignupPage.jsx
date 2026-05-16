@@ -29,7 +29,6 @@ const SignupPage = () => {
 
         try{
             const response = await signup(data);
-            console.log("Signup successful: ", response.data);
             navigate("/login");
         }catch(error){
             console.error("signup error: ", error);

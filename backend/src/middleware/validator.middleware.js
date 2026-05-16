@@ -1,5 +1,4 @@
 exports.validate = (schema) => (req, res, next) => {
-    console.log("middleware hit");
     const result = schema.safeParse(req.body);
 
     if (!result.success) {
@@ -12,7 +11,6 @@ exports.validate = (schema) => (req, res, next) => {
     }
 
     req.body = result.data;
-    console.log(req.body);
     next();
 }
 
