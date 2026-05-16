@@ -1,13 +1,13 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const PublicRoute = ({ page }) => {
+const PublicRoute = ({ children }) => {
 
     const { user } = useAuth();
 
     // auth checked, not logged in
     if (user === null) {
-        return page;
+        return children;
     }
 
     //auth checked, role checked

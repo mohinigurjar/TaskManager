@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
 
   // auth still checking
   if (user === undefined) {
@@ -13,6 +13,12 @@ const ProtectedRoute = ({ children }) => {
   if (user === null) {
     return <Navigate to="/login" replace />;
   }
+
+  // prevent admin from user dashboard
+  if (user.role?.toLowerCase() === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+
 
   return children;
 };

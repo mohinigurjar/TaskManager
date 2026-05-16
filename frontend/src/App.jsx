@@ -20,13 +20,21 @@ function App() {
       {/* LOGIN */}
       <Route
         path="/login"
-        element={<PublicRoute page={<LoginPage />} />}
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
       />
 
       {/* SIGNUP */}
       <Route
         path="/signup"
-        element={<PublicRoute page={<SignupPage />} />}
+        element={
+          <PublicRoute>
+            <SignupPage />
+          </PublicRoute>
+        }
       />
 
       {/* USER DASHBOARD */}
